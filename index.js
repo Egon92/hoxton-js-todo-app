@@ -93,7 +93,7 @@ function renderCompletedTodos(){
     }
 }
 function renderUncompletedTodos(){
-
+ 
     const uncompletedTodos = getUncompletedTodos()
     todoList.innerHTML = ""
 
