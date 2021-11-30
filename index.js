@@ -5,7 +5,7 @@
 // 4. rerender the app based on the new state
 
 
-const showCompletedCheckbox = document.querySelector(".show-completed-checkbox")
+
 const addTodoForm = document.querySelector(".add-item")
 const todoList = document.querySelector(".todo-list")
 const completedList = document.querySelector(".completed-list")
@@ -24,12 +24,21 @@ const state = {
         title: "Sleep well",
         completed: false
     }
-],
-
-    completedTodos: [],
-    uncompletedTodos: []
-
+],  
+        showCompleted: true
 }
+
+
+
+const showCompletedCheckbox = document.querySelector('.show-completed-checkbox')
+showCompletedCheckbox.addEventListener('click', function(){
+    state.showCompleted = showCompletedCheckbox.checked
+    render()
+})
+
+
+
+
 
 function getCompletedTodos() {
     return state.todos.filter(function(todo) {
@@ -58,6 +67,12 @@ function deleteTodo (text) {
     })
 }
 
+function editTodo (todo){
+    const newTitle = prompt(`Insert new title`)
+    todo.title = newTitle
+    render()
+}
+
 
 function renderCompletedTodos(){
 
@@ -67,20 +82,34 @@ function renderCompletedTodos(){
     for (const todo of completedTodos){
 
         const liEl = document.createElement("li")
-        liEl.setAttribute("class","completed-todo")
+        liEl.setAttribute("class","todo completed")
 
         liEl.innerHTML = `
-            <div class="completed-section">
-                <input class="completed-checkbox" type="checkbox" />
-            </div>
-                <input class="completed-checkbox" type="checkbox" />
-            <div class="text-section">
-                <p class="text">${todo.title}</p>
-            </div>
-            <div class="button-section">
-                <button class="edit">Edit</button>
-                <button class="delete">Delete</button>
-            </div> `
+        <div class="completed-section">
+            <input class="completed-checkbox" type="checkbox" />
+        </div>
+        
+        <div class="text-section">
+            <p class="text">${todo.title}</p>
+        </div>
+        <div class="button-section">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+        </div>  
+        `
+
+        const editBtn = liEl.querySelector(".edit")
+        editBtn.addEventListener("click", function(){
+            editTodo (todo)
+            render()
+        })
+
+        const deleteBtn = liEl.querySelector('.delete')
+        deleteBtn.addEventListener("click", function(){
+                deleteTodo (todo.title)
+                render()
+        })
+
 
         const completedCheckbox = liEl.querySelector(".completed-checkbox")
         completedCheckbox.checked = todo.completed
@@ -100,20 +129,34 @@ function renderUncompletedTodos(){
     for (const todo of uncompletedTodos){
 
         const liEl = document.createElement("li")
-        liEl.setAttribute("class","uncompleted-todo")
+        liEl.setAttribute("class","todo")
 
         liEl.innerHTML = `
             <div class="completed-section">
                 <input class="completed-checkbox" type="checkbox" />
             </div>
-                <input class="completed-checkbox" type="checkbox" />
+                
             <div class="text-section">
                 <p class="text">${todo.title}</p>
             </div>
             <div class="button-section">
                 <button class="edit">Edit</button>
                 <button class="delete">Delete</button>
-            </div> `
+            </div> 
+            `
+
+            const editBtn = liEl.querySelector(".edit")
+            editBtn.addEventListener("click", function(){
+                editTodo (todo)
+                render()
+            })
+
+            const deleteBtn = liEl.querySelector('.delete')
+                console.log(deleteBtn)
+                deleteBtn.addEventListener("click", function(){
+                deleteTodo (todo.title)
+                render()
+        })
 
             const completedCheckbox = liEl.querySelector(".completed-checkbox")
             completedCheckbox.checked = todo.completed
@@ -126,9 +169,50 @@ function renderUncompletedTodos(){
     }
 }
 
+
 function render(){
     console.log(state)
     renderCompletedTodos()
     renderUncompletedTodos()
+
+    const checkboxCompletedSection = document.querySelector("section.completed-section")
+
+    if(state.showCompleted){
+        checkboxCompletedSection.style.display = 'block'
+    }else {
+        checkboxCompletedSection.style.display = 'none'
+}
+
 }
 render()
+
+function userInputTodo(){
+    addTodoForm.addEventListener('submit', function (event) {
+        event.preventDefault()
+    
+
+        const userAddTodos= document.querySelector('.text-input')
+
+
+        const todo = {
+            title: userAddTodos.value,
+            condition: false
+        }
+
+        console.log(userAddTodos.value)
+        console.log(todo)
+
+        addTodo(todo)
+        addTodoForm.reset()
+        render()
+
+    } )   
+        
+}
+userInputTodo()
+
+        
+
+
+
+
